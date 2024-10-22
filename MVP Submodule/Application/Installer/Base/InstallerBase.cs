@@ -8,7 +8,7 @@ namespace Redbean.Base
 {
 	public class SettingsBase<T> where T : ScriptableObject
 	{
-		private static readonly string resourceLocation = $"Settings/{typeof(T).Name.Replace("Installer", "")}";
+		private static readonly string resourceLocation = $"Configure/{typeof(T).Name}";
 		
 		private static T installer;
 		protected static T Installer

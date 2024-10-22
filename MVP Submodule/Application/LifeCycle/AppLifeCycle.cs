@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Linq;
+using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -15,7 +17,7 @@ namespace Redbean
 			Application.targetFrameRate = 60;
 			
 			var go = new GameObject("[Application Life Cycle]", typeof(AppLifeCycle));
-			Object.DontDestroyOnLoad(go);
+			GameObject.DontDestroyOnLoad(go);
 		}
 	}
 	
@@ -31,9 +33,11 @@ namespace Redbean
 		private async void Awake()
 		{
 			Transform = transform;
-			
-			await AppSettings.BootstrapSetup<OnSystemBootstrap>();
-			await AppSettings.BootstrapSetup<OnValidationBootstrap>();
+
+			foreach (var instance in AppSettings.SetupBootstraps
+				         .Select(bootstrap => Type.GetType($"{bootstrap.FullName}, Assembly-CSharp"))
+				         .Select(type => Activator.CreateInstance(type) as Bootstrap))
+				await instance.Start();
 			
 			IsAppReady = true;
 		}
