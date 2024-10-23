@@ -16,10 +16,10 @@ namespace Redbean.Table
 		public const string Namespace = nameof(Redbean);
 		
 		private static string Path =>
-			$"{Application.dataPath.Replace("Assets", "")}{GoogleTableSettings.Path}";
+			$"{Application.dataPath.Replace("Assets", "")}{GoogleSheetReferencer.Path}";
 
 		private static string ItemPath =>
-			$"{Application.dataPath.Replace("Assets", "")}{GoogleTableSettings.ItemPath}";
+			$"{Application.dataPath.Replace("Assets", "")}{GoogleSheetReferencer.ItemPath}";
 
 		/// <summary>
 		/// 테이블 시트 데이터 호출
@@ -29,8 +29,8 @@ namespace Redbean.Table
 			var sheetDictionary = new Dictionary<string, string[]>();
 			var client = new ClientSecrets
 			{
-				ClientId = GoogleTableSettings.ClientId,
-				ClientSecret = GoogleTableSettings.ClientSecretId
+				ClientId = GoogleSheetReferencer.ClientId,
+				ClientSecret = GoogleSheetReferencer.ClientSecretId
 			};
 			var scopes = new[]
 			{
@@ -42,14 +42,14 @@ namespace Redbean.Table
 			{
 				HttpClientInitializer = credential
 			});
-			var sheets = await service.Spreadsheets.Get(GoogleTableSettings.SheetId).ExecuteAsync();
+			var sheets = await service.Spreadsheets.Get(GoogleSheetReferencer.SheetId).ExecuteAsync();
 			
 			// Skip Summary Sheet
 			var skipSheets = sheets.Sheets.Skip(1);
 			foreach (var sheet in skipSheets)
 			{
 				var sheetName = sheet.Properties.Title;
-				var sheetInfo = await service.Spreadsheets.Values.Get(GoogleTableSettings.SheetId, $"{sheetName}!A:Z").ExecuteAsync();
+				var sheetInfo = await service.Spreadsheets.Values.Get(GoogleSheetReferencer.SheetId, $"{sheetName}!A:Z").ExecuteAsync();
 
 				var tsv = ToTSV(sheetInfo.Values).Split("\r\n");
 				var tsvRefined = TsvRefined(tsv);
@@ -57,7 +57,7 @@ namespace Redbean.Table
 				sheetDictionary.Add(sheetName, tsvRefined);
 			}
 
-			DeleteFiles($"{GoogleTableSettings.ItemPath}");
+			DeleteFiles($"{GoogleSheetReferencer.ItemPath}");
 			return sheetDictionary;
 		}
 		

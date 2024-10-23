@@ -19,7 +19,7 @@ namespace Redbean
 	}
 	
 	[CreateAssetMenu(fileName = "ApplicationConfigure", menuName = "Redbean/Library/ApplicationConfigure")]
-	public class ApplicationConfigure : ScriptableObject
+	public class ApplicationScriptable : ScriptableObject
 	{
 		public List<BootstrapContext> SetupBootstraps = new();
 		
@@ -27,12 +27,12 @@ namespace Redbean
 		public string Version;
 	}
 
-	public class AppSettings : SettingsBase<ApplicationConfigure>
+	public class ApplicationReferencer : ScriptableBase<ApplicationScriptable>
 	{
-		public static List<BootstrapContext> SetupBootstraps => Installer.SetupBootstraps;
+		public static List<BootstrapContext> SetupBootstraps => Scriptable.SetupBootstraps;
 		
 		public static string Version =>
-			string.IsNullOrEmpty(Installer.Version) ? Application.version : Installer.Version;
+			string.IsNullOrEmpty(Scriptable.Version) ? Application.version : Scriptable.Version;
 		
 		public const string UnityAssembly = "Assembly-CSharp";
 		
@@ -43,10 +43,10 @@ namespace Redbean
 #if UNITY_EDITOR
 #region UNITY EDITOR
 	
-	[CustomEditor(typeof(ApplicationConfigure), true)]
-	public class AppInstallerEditor : Editor
+	[CustomEditor(typeof(ApplicationScriptable), true)]
+	public class ApplicationScriptableEditor : Editor
 	{
-		private ApplicationConfigure app => target as ApplicationConfigure;
+		private ApplicationScriptable app => target as ApplicationScriptable;
 		
 		private List<string> bootstrapArray;
 		private ReorderableList runtimeBootstrapRecorder;
