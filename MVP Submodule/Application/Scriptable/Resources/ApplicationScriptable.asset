@@ -15,4 +15,9 @@ MonoBehaviour:
   SetupBootstraps:
   - FullName: Redbean.OnSystemBootstrap
   - FullName: Redbean.OnValidationBootstrap
+  ScriptableObjects:
+  - {fileID: 11400000, guid: fd4a1670e79657d458229c484ba7472d, type: 2}
+  - {fileID: 11400000, guid: 67d7c9908535c4a498c5dbae066506d8, type: 2}
+  - {fileID: 11400000, guid: 3fd1894a307565941b1ed98ea89742b1, type: 2}
+  - {fileID: 11400000, guid: ecbe96c385e46f24ebfcb2bc731b4132, type: 2}
   Version: 

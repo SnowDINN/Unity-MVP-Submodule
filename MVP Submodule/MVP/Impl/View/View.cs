@@ -40,7 +40,7 @@ namespace Redbean.MVP
 			while (!AppLifeCycle.IsAppReady)
 				await Task.Yield();
 			
-			var type = Type.GetType($"{PresenterFullName}, {ApplicationReferencer.UnityAssembly}");
+			var type = Type.GetType($"{PresenterFullName}, {ApplicationLoader.UnityAssembly}");
 			if (type != null)
 				presenter = Activator.CreateInstance(type) as Presenter;
 			

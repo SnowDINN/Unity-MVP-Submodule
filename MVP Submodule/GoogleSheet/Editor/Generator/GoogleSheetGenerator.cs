@@ -14,12 +14,15 @@ namespace Redbean.Table
 	public class GoogleSheetGenerator
 	{
 		public const string Namespace = nameof(Redbean);
-		
-		private static string Path =>
-			$"{Application.dataPath.Replace("Assets", "")}{GoogleSheetReferencer.Path}";
 
-		private static string ItemPath =>
-			$"{Application.dataPath.Replace("Assets", "")}{GoogleSheetReferencer.ItemPath}";
+		private static GoogleSheetScriptable googleSheetScriptable => 
+			ApplicationLoader.GetScriptable<GoogleSheetScriptable>();
+		
+		private static string containerPath =>
+			$"{Application.dataPath.Replace("Assets", "")}{googleSheetScriptable.ContainerPath}";
+
+		private static string itemPath =>
+			$"{Application.dataPath.Replace("Assets", "")}{googleSheetScriptable.ItemPath}";
 
 		/// <summary>
 		/// 테이블 시트 데이터 호출
@@ -29,8 +32,8 @@ namespace Redbean.Table
 			var sheetDictionary = new Dictionary<string, string[]>();
 			var client = new ClientSecrets
 			{
-				ClientId = GoogleSheetReferencer.ClientId,
-				ClientSecret = GoogleSheetReferencer.ClientSecretId
+				ClientId = googleSheetScriptable.GoogleClientId,
+				ClientSecret = googleSheetScriptable.GoogleSecretId
 			};
 			var scopes = new[]
 			{
@@ -42,14 +45,14 @@ namespace Redbean.Table
 			{
 				HttpClientInitializer = credential
 			});
-			var sheets = await service.Spreadsheets.Get(GoogleSheetReferencer.SheetId).ExecuteAsync();
+			var sheets = await service.Spreadsheets.Get(googleSheetScriptable.GoogleSheetId).ExecuteAsync();
 			
 			// Skip Summary Sheet
 			var skipSheets = sheets.Sheets.Skip(1);
 			foreach (var sheet in skipSheets)
 			{
 				var sheetName = sheet.Properties.Title;
-				var sheetInfo = await service.Spreadsheets.Values.Get(GoogleSheetReferencer.SheetId, $"{sheetName}!A:Z").ExecuteAsync();
+				var sheetInfo = await service.Spreadsheets.Values.Get(googleSheetScriptable.GoogleSheetId, $"{sheetName}!A:Z").ExecuteAsync();
 
 				var tsv = ToTSV(sheetInfo.Values).Split("\r\n");
 				var tsvRefined = TsvRefined(tsv);
@@ -57,7 +60,7 @@ namespace Redbean.Table
 				sheetDictionary.Add(sheetName, tsvRefined);
 			}
 
-			DeleteFiles($"{GoogleSheetReferencer.ItemPath}");
+			DeleteFiles($"{googleSheetScriptable.ItemPath}");
 			return sheetDictionary;
 		}
 		
@@ -80,11 +83,11 @@ namespace Redbean.Table
 			stringBuilder.AppendLine("\t}");
 			stringBuilder.AppendLine("}");
 			
-			if (Directory.Exists(Path))
-				Directory.CreateDirectory(Path);
+			if (Directory.Exists(containerPath))
+				Directory.CreateDirectory(containerPath);
 			
-			File.Delete($"{Path}/Table.cs");
-			await File.WriteAllTextAsync($"{Path}/TableContainer.cs", $"{stringBuilder}");
+			File.Delete($"{containerPath}/Table.cs");
+			await File.WriteAllTextAsync($"{containerPath}/TableContainer.cs", $"{stringBuilder}");
 		}
 
 		/// <summary>
@@ -147,10 +150,10 @@ namespace Redbean.Table
 			stringBuilder.AppendLine("\t}");
 			stringBuilder.AppendLine("}");
 			
-			if (Directory.Exists(ItemPath))
-				Directory.CreateDirectory(ItemPath);
+			if (Directory.Exists(itemPath))
+				Directory.CreateDirectory(itemPath);
 			
-			await File.WriteAllTextAsync($"{ItemPath}/{classname}.cs", $"{stringBuilder}");
+			await File.WriteAllTextAsync($"{itemPath}/{classname}.cs", $"{stringBuilder}");
 		}
 		
 		private static string ToTSV(IList<IList<object>> rows)

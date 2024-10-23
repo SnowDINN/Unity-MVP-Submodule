@@ -6,27 +6,12 @@ using UnityEditor;
 
 namespace Redbean.Base
 {
-	public class ScriptableBase<T> where T : ScriptableObject
+	public class ScriptableBase : ScriptableObject
 	{
-		private static readonly string resourceLocation = $"{typeof(T).Name}";
-		
-		private static T scriptable;
-		protected static T Scriptable
-		{
-			get
-			{
-				if (!scriptable)
-					scriptable = Resources.Load<T>(resourceLocation);
-
-				return scriptable;
-			}
-		}
-		
-
-		public static void Save()
+		public void Save()
 		{
 #if UNITY_EDITOR
-			EditorUtility.SetDirty(Scriptable);
+			EditorUtility.SetDirty(this);
 			AssetDatabase.SaveAssets();
 			AssetDatabase.Refresh();
 #endif

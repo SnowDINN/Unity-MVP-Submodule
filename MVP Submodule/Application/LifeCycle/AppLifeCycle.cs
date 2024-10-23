@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -34,9 +32,7 @@ namespace Redbean
 		{
 			Transform = transform;
 
-			foreach (var instance in ApplicationReferencer.SetupBootstraps
-				         .Select(bootstrap => Type.GetType($"{bootstrap.FullName}, {ApplicationReferencer.UnityAssembly}"))
-				         .Select(type => Activator.CreateInstance(type) as Bootstrap))
+			foreach (var instance in ApplicationLoader.GetBootstraps())
 				await instance.Start();
 			
 			IsAppReady = true;

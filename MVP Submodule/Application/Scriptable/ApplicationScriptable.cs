@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Redbean.Base;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -21,23 +19,51 @@ namespace Redbean
 	[CreateAssetMenu(fileName = "ApplicationConfigure", menuName = "Redbean/Library/ApplicationConfigure")]
 	public class ApplicationScriptable : ScriptableObject
 	{
+		[HideInInspector]
 		public List<BootstrapContext> SetupBootstraps = new();
+
+		[Header("Get application scriptable asset")]
+		public List<ScriptableObject> ScriptableObjects;
 		
 		[Header("Get application information during runtime")]
 		public string Version;
 	}
 
-	public class ApplicationReferencer : ScriptableBase<ApplicationScriptable>
+	public class ApplicationLoader
 	{
-		public static List<BootstrapContext> SetupBootstraps => Scriptable.SetupBootstraps;
+		private static readonly string resourceLocation = $"{nameof(ApplicationScriptable)}";
 		
-		public static string Version =>
-			string.IsNullOrEmpty(Scriptable.Version) ? Application.version : Scriptable.Version;
+		private static ApplicationScriptable scriptable;
+		protected static ApplicationScriptable Scriptable
+		{
+			get
+			{
+				if (!scriptable)
+					scriptable = Resources.Load<ApplicationScriptable>(resourceLocation);
+
+				return scriptable;
+			}
+		}
+		
+		private static List<BootstrapContext> SetupBootstraps => Scriptable.SetupBootstraps;
+		private static List<ScriptableObject> ScriptableObjects => Scriptable.ScriptableObjects;
 		
 		public const string UnityAssembly = "Assembly-CSharp";
 		
-		public static async Task BootstrapSetup<T>() where T : Bootstrap =>
-			await Activator.CreateInstance<T>().Start();
+		public static string GetVersion() =>
+			string.IsNullOrEmpty(Scriptable.Version) 
+				? Application.version 
+				: Scriptable.Version;
+
+		public static List<Bootstrap> GetBootstraps() => 
+			SetupBootstraps
+				.Select(bootstrap => Type.GetType($"{bootstrap.FullName}, {UnityAssembly}"))
+				.Select(type => Activator.CreateInstance(type) as Bootstrap)
+				.ToList();
+
+		public static T GetScriptable<T>() where T : ScriptableObject =>
+			ScriptableObjects
+				.FirstOrDefault(_ => _.GetType() == typeof(T)) as T;
 	}
 	
 #if UNITY_EDITOR
