@@ -15,8 +15,8 @@ namespace Redbean
 		{
 			if (Cancellations.TryGetValue(tokenName, out var cancellation))
 				cancellation.CancelAndDispose();
+			
 			Cancellations[tokenName] = new CancellationTokenSource();
-
 			return Cancellations[tokenName];
 		}
 
