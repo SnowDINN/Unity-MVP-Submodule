@@ -13,7 +13,7 @@ namespace Redbean.Table
 				var tsv = $"{page.Value}".Split("\r\n");
 				
 				// Skip Name and Type Rows
-				var type = Type.GetType($"{nameof(Redbean)}.Table.T{page.Key}");
+				var type = Type.GetType($"{nameof(Redbean)}.Table.T{page.Key}, {AppSettings.UnityAssembly}");
 				if (Activator.CreateInstance(type) is ITable instance)
 					instance.Apply(tsv.Skip(2));
 			}
@@ -32,7 +32,7 @@ namespace Redbean.Table
 				var tsv = $"{page.Value}".Split("\r\n");
 				
 				// Skip Name and Type Rows
-				var type = Type.GetType($"{nameof(Redbean)}.Table.T{page.Key}");
+				var type = Type.GetType($"{nameof(Redbean)}.Table.T{page.Key}, {AppSettings.UnityAssembly}");
 				if (Activator.CreateInstance(type) is ITable instance)
 					instance.Apply(tsv.Skip(2));
 			}

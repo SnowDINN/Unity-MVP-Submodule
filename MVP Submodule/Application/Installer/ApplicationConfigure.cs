@@ -34,6 +34,8 @@ namespace Redbean
 		public static string Version =>
 			string.IsNullOrEmpty(Installer.Version) ? Application.version : Installer.Version;
 		
+		public const string UnityAssembly = "Assembly-CSharp";
+		
 		public static async Task BootstrapSetup<T>() where T : Bootstrap =>
 			await Activator.CreateInstance<T>().Start();
 	}

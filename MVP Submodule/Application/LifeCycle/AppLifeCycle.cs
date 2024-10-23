@@ -35,7 +35,7 @@ namespace Redbean
 			Transform = transform;
 
 			foreach (var instance in AppSettings.SetupBootstraps
-				         .Select(bootstrap => Type.GetType($"{bootstrap.FullName}, Assembly-CSharp"))
+				         .Select(bootstrap => Type.GetType($"{bootstrap.FullName}, {AppSettings.UnityAssembly}"))
 				         .Select(type => Activator.CreateInstance(type) as Bootstrap))
 				await instance.Start();
 			

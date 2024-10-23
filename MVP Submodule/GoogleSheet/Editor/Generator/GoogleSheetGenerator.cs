@@ -71,7 +71,7 @@ namespace Redbean.Table
 			stringBuilder.AppendLine();
 			stringBuilder.AppendLine($"namespace {Namespace}.Table");
 			stringBuilder.AppendLine("{");
-			stringBuilder.AppendLine($"\tpublic class GameConfigure");
+			stringBuilder.AppendLine($"\tpublic class TableContainer");
 			stringBuilder.AppendLine("\t{");
 
 			foreach (var table in tables)
@@ -84,7 +84,7 @@ namespace Redbean.Table
 				Directory.CreateDirectory(Path);
 			
 			File.Delete($"{Path}/Table.cs");
-			await File.WriteAllTextAsync($"{Path}/GameConfigure.cs", $"{stringBuilder}");
+			await File.WriteAllTextAsync($"{Path}/TableContainer.cs", $"{stringBuilder}");
 		}
 
 		/// <summary>
@@ -111,7 +111,7 @@ namespace Redbean.Table
 			stringBuilder.AppendLine();
 			stringBuilder.AppendLine($"\t\tpublic void {nameof(ITable.Apply)}(IEnumerable<string> values)");
 			stringBuilder.AppendLine("\t\t{");
-			stringBuilder.AppendLine($"\t\t\tGameConfigure.{key}.Clear();");
+			stringBuilder.AppendLine($"\t\t\tTableContainer.{key}.Clear();");
 			stringBuilder.AppendLine();
 			stringBuilder.AppendLine("\t\t\tforeach (var value in values)");
 			stringBuilder.AppendLine("\t\t\t{");
@@ -141,7 +141,7 @@ namespace Redbean.Table
 			
 			stringBuilder.AppendLine("\t\t\t\t};");
 			stringBuilder.AppendLine();
-			stringBuilder.AppendLine($"\t\t\t\tGameConfigure.{key}.Add(item.Id, item);");
+			stringBuilder.AppendLine($"\t\t\t\tTableContainer.{key}.Add(item.Id, item);");
 			stringBuilder.AppendLine("\t\t\t}");
 			stringBuilder.AppendLine("\t\t}");
 			stringBuilder.AppendLine("\t}");
