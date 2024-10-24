@@ -34,10 +34,10 @@ namespace Redbean.MVP
 
 		private async Task AwakeAsync()
 		{
-			while (!AppLifeCycle.IsAppChecked)
+			while (!ApplicationLifeCycle.IsAppChecked)
 				await Task.Yield();
 			
-			while (!AppLifeCycle.IsAppReady)
+			while (!ApplicationLifeCycle.IsAppReady)
 				await Task.Yield();
 			
 			var type = Type.GetType($"{PresenterFullName}, {ApplicationLoader.UnityAssembly}");

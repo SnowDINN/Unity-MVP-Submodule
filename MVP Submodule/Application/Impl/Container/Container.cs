@@ -12,7 +12,7 @@ namespace Redbean
 				if (m_container is not null)
 					return m_container;
 
-				AppLifeCycle.OnAppExit += OnAppExit;
+				ApplicationLifeCycle.OnApplicationExit += OnApplicationExit;
 				m_container = new Dictionary<Key, Value>();
 				
 				return m_container;
@@ -21,9 +21,9 @@ namespace Redbean
 			set => m_container = value;
 		}
 
-		private static void OnAppExit()
+		private static void OnApplicationExit()
 		{
-			AppLifeCycle.OnAppExit -= OnAppExit;
+			ApplicationLifeCycle.OnApplicationExit -= OnApplicationExit;
 			m_container.Clear();
 		}
 	}

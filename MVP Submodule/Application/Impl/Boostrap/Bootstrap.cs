@@ -10,15 +10,15 @@ namespace Redbean
 		
 		public async Task Start()
 		{
-			AppLifeCycle.OnAppExit += OnAppExit;
+			ApplicationLifeCycle.OnApplicationExit += OnApplicationExit;
 
 			source = new CancellationTokenSource();
 			await Setup();
 		}
 		
-		private async void OnAppExit()
+		private async void OnApplicationExit()
 		{
-			AppLifeCycle.OnAppExit -= OnAppExit;
+			ApplicationLifeCycle.OnApplicationExit -= OnApplicationExit;
 
 			source?.Cancel();
 			await Teardown();

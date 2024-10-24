@@ -6,7 +6,7 @@ using UnityEditor;
 
 namespace Redbean
 {
-	public class AppStart
+	public class ApplicationStart
 	{
 		[RuntimeInitializeOnLoadMethod]
 		public static void Start()
@@ -14,15 +14,15 @@ namespace Redbean
 			Application.runInBackground = true;
 			Application.targetFrameRate = 60;
 			
-			var go = new GameObject("[Application Life Cycle]", typeof(AppLifeCycle));
+			var go = new GameObject("[Application Life Cycle]", typeof(ApplicationLifeCycle));
 			GameObject.DontDestroyOnLoad(go);
 		}
 	}
 	
-	public class AppLifeCycle : MonoBase
+	public class ApplicationLifeCycle : MonoBase
 	{
-		public delegate void onAppExit();
-		public static event onAppExit OnAppExit;
+		public delegate void onApplicationExit();
+		public static event onApplicationExit OnApplicationExit;
 
 		public static Transform Transform { get; private set; }
 		public static bool IsAppChecked { get; private set; }
@@ -41,7 +41,7 @@ namespace Redbean
 		public override void OnDestroy()
 		{
 			IsAppReady = false;
-			OnAppExit?.Invoke();
+			OnApplicationExit?.Invoke();
 			
 #if UNITY_EDITOR
 			if (EditorApplication.isPlaying)
