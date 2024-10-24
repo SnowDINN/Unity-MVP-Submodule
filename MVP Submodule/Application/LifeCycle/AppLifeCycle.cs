@@ -32,7 +32,7 @@ namespace Redbean
 		{
 			Transform = transform;
 
-			foreach (var instance in ApplicationLoader.GetBootstraps())
+			foreach (var instance in ApplicationLoader.GetSetupBootstraps())
 				await instance.Start();
 			
 			IsAppReady = true;

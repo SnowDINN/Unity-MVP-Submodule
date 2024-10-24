@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Redbean.Base;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -16,7 +17,7 @@ namespace Redbean
 		public string FullName;
 	}
 	
-	[CreateAssetMenu(fileName = "ApplicationConfigure", menuName = "Redbean/Library/ApplicationConfigure")]
+	[CreateAssetMenu(fileName = "ApplicationScriptable", menuName = "Redbean/Library/ApplicationScriptable")]
 	public class ApplicationScriptable : ScriptableObject
 	{
 		[HideInInspector]
@@ -55,13 +56,13 @@ namespace Redbean
 				? Application.version 
 				: Scriptable.Version;
 
-		public static List<Bootstrap> GetBootstraps() => 
+		public static List<Bootstrap> GetSetupBootstraps() => 
 			SetupBootstraps
 				.Select(bootstrap => Type.GetType($"{bootstrap.FullName}, {UnityAssembly}"))
 				.Select(type => Activator.CreateInstance(type) as Bootstrap)
 				.ToList();
 
-		public static T GetScriptable<T>() where T : ScriptableObject =>
+		public static T GetScriptable<T>() where T : ScriptableBase =>
 			ScriptableObjects
 				.FirstOrDefault(_ => _.GetType() == typeof(T)) as T;
 	}
